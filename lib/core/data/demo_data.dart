@@ -1,0 +1,158 @@
+import '../models/app_models.dart';
+
+class DemoData {
+  static final demoUsers = <String, AppUser>{
+    'citizen': const AppUser(
+      id: 'demo-citizen',
+      authId: 'demo-citizen',
+      email: 'juan@example.com',
+      fullName: 'Juan Dela Cruz',
+      role: AppRole.citizen,
+      status: 'approved',
+      phone: '+63 917 555 1200',
+      address: 'Brgy. San Jose, Batangas City',
+      age: '29',
+      sex: 'Male',
+      bloodType: 'O+',
+      allergies: 'Penicillin',
+      emergencyContact: 'Maria Dela Cruz · +63 917 555 1201',
+      medicalConditions: ['Asthma'],
+    ),
+    'responder': const AppUser(
+      id: 'demo-responder',
+      authId: 'demo-responder',
+      email: 'responder@sagip.ph',
+      fullName: 'EMS Responder 02',
+      role: AppRole.responder,
+      status: 'approved',
+      phone: '+63 917 555 1300',
+      address: 'Batangas City DRRMO Station',
+    ),
+    'professional': const AppUser(
+      id: 'demo-professional',
+      authId: 'demo-professional',
+      email: 'doctor@sagip.ph',
+      fullName: 'Dr. Andrea Reyes',
+      role: AppRole.professional,
+      status: 'approved',
+      phone: '+63 917 555 1400',
+      address: 'Batangas Medical Center',
+    ),
+    'admin': const AppUser(
+      id: 'demo-admin',
+      authId: 'demo-admin',
+      email: 'admin@sagip.ph',
+      fullName: 'LGU Health Admin',
+      role: AppRole.admin,
+      status: 'approved',
+      phone: '+63 917 555 1500',
+      address: 'City Health Office, Batangas City',
+    ),
+  };
+
+  static final appointments = <Appointment>[
+    Appointment(
+      id: 'appt-001',
+      patientId: 'demo-citizen',
+      providerId: 'demo-professional',
+      providerEmail: 'doctor@sagip.ph',
+      patientName: 'Juan Dela Cruz',
+      providerName: 'Dr. Andrea Reyes',
+      providerSpecialty: 'Internal Medicine',
+      facilityName: 'Batangas Medical Center',
+      scheduledAt: DateTime.now().add(const Duration(days: 1, hours: 2)),
+      type: 'telemedicine',
+      status: 'accepted',
+      reason: 'Persistent cough and mild fever',
+      contactNumber: '+63 917 555 1200',
+      teleconsultUrl: 'https://meet.example.com/resq-demo',
+    ),
+    Appointment(
+      id: 'appt-002',
+      patientId: 'demo-citizen',
+      providerId: 'demo-professional',
+      providerEmail: 'doctor@sagip.ph',
+      patientName: 'Maria Santos',
+      providerName: 'Dr. Andrea Reyes',
+      providerSpecialty: 'Family Medicine',
+      facilityName: 'Batangas City Health Office',
+      scheduledAt: DateTime.now().add(const Duration(days: 2, hours: 3)),
+      type: 'in-person',
+      status: 'pending',
+      reason: 'Follow-up checkup after triage',
+      contactNumber: '+63 917 000 1000',
+    ),
+  ];
+
+  static final incidents = <Incident>[
+    Incident(
+      id: 'inc-001',
+      type: 'Chest Pain',
+      priority: 'CRITICAL',
+      status: 'pending',
+      address: 'P. Burgos St., Brgy. Poblacion 4, Batangas City',
+      barangay: 'Poblacion 4',
+      patientInfo: 'Male, 56, conscious, chest pain and sweating',
+      notes: 'Caller requested ambulance. Possible cardiac emergency.',
+      reportedAt: DateTime.now().subtract(const Duration(minutes: 6)),
+      latitude: 13.7563,
+      longitude: 121.0583,
+    ),
+    Incident(
+      id: 'inc-002',
+      type: 'Road Accident',
+      priority: 'HIGH',
+      status: 'dispatched',
+      address: 'Maharlika Highway km 47, Batangas City',
+      barangay: 'Kumintang Ibaba',
+      patientInfo: 'Two patients, minor bleeding, one possible fracture',
+      notes: 'Traffic obstruction reported.',
+      reportedAt: DateTime.now().subtract(const Duration(minutes: 19)),
+      assignedResponderId: 'demo-responder',
+      latitude: 13.771,
+      longitude: 121.061,
+    ),
+  ];
+
+  static final facilities = <Facility>[
+    const Facility(
+      id: 'fac-001',
+      name: 'Batangas Medical Center',
+      type: 'Level 3 Hospital',
+      address: 'Kumintang Ibaba, Batangas City',
+      phone: '(043) 723 0911',
+      services: ['Emergency', 'Internal Medicine', 'Pediatrics', 'Radiology'],
+      distanceKm: 2.4,
+      latitude: 13.775,
+      longitude: 121.064,
+    ),
+    const Facility(
+      id: 'fac-002',
+      name: 'Batangas City Health Office',
+      type: 'Public Health Unit',
+      address: 'Poblacion, Batangas City',
+      phone: '(043) 723 2322',
+      services: ['Primary Care', 'Vaccination', 'Maternal Health'],
+      distanceKm: 1.1,
+      latitude: 13.756,
+      longitude: 121.058,
+    ),
+    const Facility(
+      id: 'fac-003',
+      name: 'San Jose Barangay Clinic',
+      type: 'Barangay Health Station',
+      address: 'Brgy. San Jose, Batangas City',
+      phone: '+63 917 555 0112',
+      services: ['First Aid', 'Consultation', 'BP Monitoring'],
+      distanceKm: 0.8,
+    ),
+  ];
+
+  static final hotspots = <Hotspot>[
+    const Hotspot(id: 'hot-001', barangay: 'San Jose', disease: 'Dengue', cases: 47, level: 'HIGH', trend: 'up'),
+    const Hotspot(id: 'hot-002', barangay: 'Poblacion 4', disease: 'Respiratory Illness', cases: 21, level: 'MODERATE', trend: 'stable'),
+    const Hotspot(id: 'hot-003', barangay: 'Kumintang Ibaba', disease: 'Influenza-like Illness', cases: 8, level: 'LOW', trend: 'down'),
+  ];
+
+  static AppUser userForRole(AppRole role) => demoUsers[role.name]!;
+}
