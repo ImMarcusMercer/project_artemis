@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "479166958789",
+    "project_id": "project-artemis-fc9c4",
+    "storage_bucket": "project-artemis-fc9c4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479166958789:android:d404d612686084a753b4ac",
+        "android_client_info": {
+          "package_name": "com.example.artemis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479166958789-sn601hgnrbplv9iqkcerklfqfm0quq4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPS-YgIOWNNd_8XB1z7BfKAdwzH848jnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479166958789-sn601hgnrbplv9iqkcerklfqfm0quq4d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,152 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function hasUserDoc() {
+      return signedIn() && exists(userPath());
+    }
+
+    function role() {
+      return hasUserDoc() ? get(userPath()).data.role : null;
+    }
+
+    function isAdmin() {
+      return role() == 'admin';
+    }
+
+    function isResponder() {
+      return role() == 'responder';
+    }
+
+    function isProfessional() {
+      return role() == 'professional';
+    }
+
+    function isCitizen() {
+      return role() == 'citizen';
+    }
+
+    match /users/{userId} {
+      allow create: if signedIn() && request.auth.uid == userId;
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow update: if signedIn() && (
+        request.auth.uid == userId ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /facilities/{facilityId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /facility_providers/{providerLinkId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /appointments/{appointmentId} {
+      allow create: if signedIn() && request.resource.data.patientId == request.auth.uid;
+      allow read: if signedIn() && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.providerId == request.auth.uid ||
+        resource.data.providerEmail == request.auth.token.email ||
+        isAdmin()
+      );
+      allow update: if signedIn() && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.providerId == request.auth.uid ||
+        resource.data.providerEmail == request.auth.token.email ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /consultation_notes/{noteId} {
+      allow create, update, read: if signedIn() && (isProfessional() || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /prescriptions/{prescriptionId} {
+      allow create, update: if signedIn() && isProfessional();
+      allow read: if signedIn() && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.providerId == request.auth.uid ||
+        resource.data.providerEmail == request.auth.token.email ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /sos_alerts/{alertId} {
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if signedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isResponder() ||
+        isAdmin()
+      );
+      allow update: if signedIn() && (isResponder() || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /incidents/{incidentId} {
+      allow create: if signedIn() && (isCitizen() || isResponder() || isAdmin());
+      allow read: if signedIn() && (
+        resource.data.reportedBy == request.auth.uid ||
+        isResponder() ||
+        isProfessional() ||
+        isAdmin()
+      );
+      allow update: if signedIn() && (isResponder() || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /incident_reports/{reportId} {
+      allow create: if signedIn() && (isResponder() || isAdmin());
+      allow read: if signedIn() && (isResponder() || isProfessional() || isAdmin());
+      allow update, delete: if isAdmin();
+    }
+
+    match /disease_hotspots/{hotspotId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /hotspot_weekly_data/{dataId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /symptom_checks/{checkId} {
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if signedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isProfessional() ||
+        isAdmin()
+      );
+    }
+
+    match /mental_health_sessions/{sessionId} {
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /notifications/{notificationId} {
+      allow create: if signedIn() && (request.resource.data.userId == request.auth.uid || isAdmin() || isResponder() || isProfessional());
+      allow read, update, delete: if signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /audit_logs/{auditId} {
+      allow create, read: if isAdmin();
+      allow update, delete: if false;
+    }
+  }
+}
